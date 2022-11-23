@@ -6,10 +6,11 @@ found = {}
 
 for letter in word:
     if letter in vowels:
-        if letter not in list(found.keys()):
-            found[letter] = 1
-        else:
-            found[letter] += 1
+        found.setdefault(letter, 0)
+        found[letter] += 1
 
-for k, v in sorted(found.items()):
-    print('Гласная ', k, 'найдена ', v, 'раз')
+if not found:
+    print('Гласных букв не обнаружено.')
+else:
+    for k, v in sorted(found.items()):
+        print('Гласная ', k, 'найдена ', v, 'раз.')
