@@ -1,14 +1,14 @@
-phrase = input('Введите слово или фразу, а я проверю, пaлиндром ли это: ')
-l_phrase = list(phrase)
+phrase = list(input('Введите слово или фразу, а я проверю, пaлиндром ли это: '))
+
 back_phrase = []
 
-for i in l_phrase:
+for i in phrase:
     if i == ' ':
-        l_phrase.remove(' ')
+        phrase.remove(' ')
 
-back_phrase = l_phrase[::-1]
+back_phrase = phrase[::-1]
 
-if l_phrase == back_phrase:
+if phrase == back_phrase:
     print('Это палиндром')
 else:
     print('Это не палиндром')
