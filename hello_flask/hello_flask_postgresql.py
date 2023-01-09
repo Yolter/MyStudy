@@ -7,7 +7,7 @@ app = Flask(__name__)
 # def hello() -> '302':
 #     return redirect('/entry')
 def log_request(req: 'flask_request', res: str) -> None:
-    with open('../vsearch.log', 'a') as log:
+    with open('vsearch.log', 'a') as log:
         print(req.form, req.remote_addr, req.user_agent, res, file=log, sep=' | ')
 
 
@@ -38,7 +38,7 @@ def entry_page() -> 'html':
 @app.route('/viewlog')
 def viewlog() -> 'html':
     contents = []
-    with open('../vsearch.log') as log:
+    with open('vsearch.log') as log:
         for line in log:
             contents.append([])
             for item in line.split('|'):
