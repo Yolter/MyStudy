@@ -1,11 +1,14 @@
 from flask import Flask, render_template, request, escape  # redirect
 from vsearch import search4letters
+import psycopg2
+from config_postgresql import config
 
 app = Flask(__name__)
 
 
 # def hello() -> '302':
 #     return redirect('/entry')
+
 def log_request(req: 'flask_request', res: str) -> None:
     with open('vsearch.log', 'a') as log:
         print(req.form, req.remote_addr, req.user_agent, res, file=log, sep=' | ')
