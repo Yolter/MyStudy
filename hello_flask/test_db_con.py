@@ -11,7 +11,7 @@ def connect():
         with connection.cursor() as crsr:
             print('Версия бызы данных PostgresQL: ')
             crsr.execute('SELECT VERSION()')
-            db_version = crsr.fetchone()
+            db_version = crsr.fetchall()
             print(db_version)
     except(Exception, psycopg2.DatabaseError) as error:
         print(error)
