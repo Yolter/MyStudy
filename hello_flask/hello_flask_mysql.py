@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, escape  # redirect
 from vsearch import search4letters
 from config_mysql import config
-import mysql.connector
+from mysql.connector import connect
 
 
 app = Flask(__name__)
@@ -12,7 +12,7 @@ app = Flask(__name__)
 def log_request(req: 'flask_request', res: str) -> None:
     with open('vsearch.log', 'a') as log:
         print(req.form, req.remote_addr, req.user_agent, res, file=log, sep=' | ')
-    with mysql.connector.connect(**config()) as conn:
+    with connect(**config()) as conn:
         with conn.cursor() as crsr:
             _SQL = """INSERT INTO log
                       (phrase, letters, ip, browser_string, results)
