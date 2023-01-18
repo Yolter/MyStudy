@@ -1,7 +1,23 @@
 from configparser import ConfigParser
+from mysql.connector import connect
 
 
-def config(filename='db_mysql.ini', section='mysql'):
+class UseDatabase:
+    def __int__(self, conf: dict) -> None:
+        self.configuration = conf
+
+    def __enter__(self) -> 'db cursor':
+        self.conn = connect(**self.configuration)
+        self.cursor = self.conn.cursor()
+        return self.cursor
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        self.conn.commit()
+        self.cursor.close()
+        self.conn.close()
+
+
+def config(filename='db_mysql.ini', section='mysql') -> dict:
     parser = ConfigParser()
     parser.read(filename)
     db = {}
