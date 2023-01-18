@@ -1,12 +1,12 @@
 class CountFromBy:
-    def __init__(self, val=0, incr=1):
+    def __init__(self, val: int = 0, incr: int = 1) -> None:
         self.val = val
         self.incr = incr
 
     def increase(self) -> None:
         self.val += self.incr
 
-    def show_atr(self):
+    def show_atr(self) -> str:
         print(f'val={self.val} incr={self.incr}')
 
 
