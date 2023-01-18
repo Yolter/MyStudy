@@ -6,8 +6,8 @@ class CountFromBy:
     def increase(self) -> None:
         self.val += self.incr
 
-    def show_atr(self) -> str:
-        print(f'val={self.val} incr={self.incr}')
+    def __repr__(self) -> str:
+        return str(self.val)
 
 
 if __name__ == '__main__':
@@ -17,5 +17,4 @@ if __name__ == '__main__':
     for i in range(5):
         a.increase()
     a.increase()
-    b.show_atr()
-    a.show_atr()
+
