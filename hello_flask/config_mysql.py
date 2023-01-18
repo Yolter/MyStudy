@@ -3,7 +3,7 @@ from mysql.connector import connect
 
 
 class UseDatabase:
-    def __int__(self, conf: dict) -> None:
+    def __init__(self, conf: dict) -> None:
         self.configuration = conf
 
     def __enter__(self) -> 'db cursor':
