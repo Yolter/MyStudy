@@ -1,9 +1,12 @@
-from flask import Flask, render_template, request, escape  # redirect
+from flask import Flask, render_template, request, session  # escape, redirect
 from vsearch import search4letters
 from config_mysql import config, UseDatabase
+from checker import check_logged_in
 
 
 app = Flask(__name__)
+
+app.secret_key = 'YouWon_tGuess'
 
 
 # def hello() -> '302':
@@ -18,6 +21,25 @@ def log_request(req: 'flask_request', res: str) -> None:
                   (%s, %s, %s, %s, %s)"""
         crsr.execute(_SQL, (req.form['phrase'], req.form['letters'],
                             req.remote_addr, str(req.user_agent), res))
+
+
+@app.route('/login')
+def do_login() -> str:
+    session['logged_in'] = True
+    return 'Теперь вы в системе!'
+
+
+@app.route('/logout')
+def do_logout() -> str:
+    session.pop('logged_in')
+    return 'Вы теперь не в системе!'
+
+
+@app.route('/')
+@app.route('/entry')
+def entry_page() -> 'html':
+    return render_template('entry.html',
+                           the_title='Welcome to search4letters on the Web!')
 
 
 @app.route('/search4', methods=['POST'])
@@ -37,14 +59,8 @@ def do_search() -> 'html':
                            the_results=results)
 
 
-@app.route('/')
-@app.route('/entry')
-def entry_page() -> 'html':
-    return render_template('entry.html',
-                           the_title='Welcome to search4letters on the Web!')
-
-
 @app.route('/viewlog')
+@check_logged_in
 def viewlog() -> 'html':
     with UseDatabase(config()) as crsr:
         _SQL = """SELECT * FROM log"""
