@@ -8,6 +8,14 @@ class ConnectError(Exception):
     pass
 
 
+class SQLError(Exception):
+    pass
+
+
+class CredentialsError(Exception):
+    pass
+
+
 class UseDatabase:
     def __init__(self, conf: dict) -> None:
         self.configuration = conf
@@ -19,11 +27,17 @@ class UseDatabase:
             return self.cursor
         except mysql.connector.errors.InterfaceError as err:
             raise ConnectionError(err)
+        except mysql.connector.errors.ProgrammingError as err:
+            raise CredentialsError(err)
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         self.conn.commit()
         self.cursor.close()
         self.conn.close()
+        if exc_type is mysql.connector.errors.ProgrammingError:
+            raise SQLError(exc_val)
+        elif exc_type:
+            raise exc_type(exc_val)
 
 
 def config(filename='db_mysql.ini', section='mysql') -> dict:

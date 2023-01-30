@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, session  # escape, redirect
 from vsearch import search4letters
-from config_mysql import config, UseDatabase, ConnectError
+from config_mysql import config, UseDatabase, ConnectError, CredentialsError, SQLError
 from checker import check_logged_in
 
 
@@ -78,6 +78,10 @@ def viewlog() -> 'html':
                                the_data=contents,)
     except ConnectError as err:
         print('База данных точно подключена? Ошибка: ', str(err))
+    except CredentialsError as err:
+        print('Логин или пароль некорректны. Ошибка: ', str(err))
+    except SQLError as err:
+        print('Ваш запрос точно верен? Ошибка: ', str(err))
     except Exception as err:
         print('Что то пошло не так. Ошибка: ', str(err))
     return 'Ошибка'
