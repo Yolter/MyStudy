@@ -48,10 +48,13 @@ def do_search() -> 'html':
     letters = request.form['letters']
     title = 'Here are your results:'
     if not search4letters(phrase, letters):
-        results = 'No matches found'
+        results = 'Совпадений не найдено'
     else:
         results = str(search4letters(phrase, letters))
-    log_request(request, results)
+    try:
+        log_request(request, results)
+    except Exception as err:
+        print('***** Логирование прервано из-за этой ошибки: ', str(err))
     return render_template('results.html',
                            the_title=title,
                            the_phrase=phrase,
