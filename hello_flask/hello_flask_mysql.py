@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, session  # escape, redirect
 from vsearch import search4letters
-from config_mysql import config, UseDatabase
+from config_mysql import config, UseDatabase, ConnectError
 from checker import check_logged_in
 
 
@@ -65,16 +65,22 @@ def do_search() -> 'html':
 @app.route('/viewlog')
 @check_logged_in
 def viewlog() -> 'html':
-    with UseDatabase(config()) as crsr:
-        _SQL = """SELECT * FROM log"""
-        crsr.execute(_SQL)
-        contents = crsr.fetchall()
-    titles = ('Id', 'Time Stamp', 'Phrase', 'Letters',
-              'Ip', 'User_agent', 'Results')
-    return render_template('viewlog.html',
-                           the_title='View Log',
-                           the_row_titles=titles,
-                           the_data=contents,)
+    try:
+        with UseDatabase(config()) as crsr:
+            _SQL = """SELECT * FROM log"""
+            crsr.execute(_SQL)
+            contents = crsr.fetchall()
+        titles = ('Id', 'Time Stamp', 'Phrase', 'Letters',
+                  'Ip', 'User_agent', 'Results')
+        return render_template('viewlog.html',
+                               the_title='View Log',
+                               the_row_titles=titles,
+                               the_data=contents,)
+    except ConnectError as err:
+        print('База данных точно подключена? Ошибка: ', str(err))
+    except Exception as err:
+        print('Что то пошло не так. Ошибка: ', str(err))
+    return 'Ошибка'
 
 
 if __name__ == '__main__':

@@ -1,5 +1,11 @@
 from configparser import ConfigParser
+
+import mysql.connector.errors
 from mysql.connector import connect
+
+
+class ConnectError(Exception):
+    pass
 
 
 class UseDatabase:
@@ -7,9 +13,12 @@ class UseDatabase:
         self.configuration = conf
 
     def __enter__(self) -> 'db cursor':
-        self.conn = connect(**self.configuration)
-        self.cursor = self.conn.cursor()
-        return self.cursor
+        try:
+            self.conn = connect(**self.configuration)
+            self.cursor = self.conn.cursor()
+            return self.cursor
+        except mysql.connector.errors.InterfaceError as err:
+            raise ConnectionError(err)
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         self.conn.commit()
