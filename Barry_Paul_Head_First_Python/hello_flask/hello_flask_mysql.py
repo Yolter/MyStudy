@@ -1,7 +1,10 @@
 from flask import Flask, render_template, request, session  # escape, redirect
+from flask import copy_current_request_context
 from vsearch import search4letters
 from config_mysql import config, UseDatabase, ConnectError, CredentialsError, SQLError
 from checker import check_logged_in
+from time import sleep
+from threading import Thread
 
 
 app = Flask(__name__)
@@ -11,16 +14,6 @@ app.secret_key = 'YouWon_tGuess'
 
 # def hello() -> '302':
 #     return redirect('/entry')
-def log_request(req: 'flask_request', res: str) -> None:
-    with open('vsearch.log', 'a') as log:
-        print(req.form, req.remote_addr, req.user_agent, res, file=log, sep=' | ')
-    with UseDatabase(config()) as crsr:
-        _SQL = """INSERT INTO log
-                  (phrase, letters, ip, browser_string, results)
-                  VALUES
-                  (%s, %s, %s, %s, %s)"""
-        crsr.execute(_SQL, (req.form['phrase'], req.form['letters'],
-                            req.remote_addr, str(req.user_agent), res))
 
 
 @app.route('/login')
@@ -39,20 +32,38 @@ def do_logout() -> str:
 @app.route('/entry')
 def entry_page() -> 'html':
     return render_template('entry.html',
-                           the_title='Welcome to search4letters on the Web!')
+                           the_title='Добро пожаловать в search4letters!')
 
 
 @app.route('/search4', methods=['POST'])
 def do_search() -> 'html':
+
+    @copy_current_request_context
+    def log_request(req: 'flask_request', res: str) -> None:
+        sleep(
+            15)  # используем искусственное замеделения для проверки работы параллельного запуска
+        with open('vsearch.log', 'a') as log:
+            print(req.form, req.remote_addr, req.user_agent, res, file=log,
+                  sep=' | ')
+        with UseDatabase(config()) as crsr:
+            _SQL = """INSERT INTO log
+                      (phrase, letters, ip, browser_string, results)
+                      VALUES
+                      (%s, %s, %s, %s, %s)"""
+            crsr.execute(_SQL, (req.form['phrase'], req.form['letters'],
+                                req.remote_addr, str(req.user_agent), res))
+
     phrase = request.form['phrase']
     letters = request.form['letters']
-    title = 'Here are your results:'
+    title = 'Вот ваши результаты:'
     if not search4letters(phrase, letters):
         results = 'Совпадений не найдено'
     else:
         results = str(search4letters(phrase, letters))
     try:
-        log_request(request, results)
+        # запускаем фнукцию log_request в параллельном режиме
+        t = Thread(target=log_request, args=(request, results))
+        t.start()
     except Exception as err:
         print('***** Логирование прервано из-за этой ошибки: ', str(err))
     return render_template('results.html',
