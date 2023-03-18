@@ -21,14 +21,14 @@ ints = [-1, -2, -3, 7, 3, 2, 0]
 
 positives = [i for i in ints if i > 0]
 
-matrix = [list(range(i, i+3)) for i in range(3)]
-
+matrix = [list(range(i, i + 3)) for i in range(3)]
 
 if __name__ == '__main__':
-    print(squares)
-    print(even_squares)
-    print(new_text)
-    print(new_text2)
-    print(ints)
-    print(positives)
-    pprint(matrix, width=13)
+    print(f'squares: {squares}')
+    print(f'even_squares: {even_squares}')
+    print(f'text: {text}')
+    print(f'new_text: {new_text}')
+    print(f'new_text2: {new_text2}')
+    print(f'ints: {ints}')
+    print(f'positives: {positives}')
+    pprint(matrix, width=20)
