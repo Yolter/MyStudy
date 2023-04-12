@@ -1,6 +1,6 @@
 from accessify import *
 
-# test
+
 class Point:
     color = 'red'
     circle = 2
@@ -26,11 +26,12 @@ class Point:
         # без этой строки новый объект не будет создан!
         return super().__new__(cls)
 
-    def __init__(self, x: int = 0, y: int = 0):
-        self.__x = self.y = 0
-        if self.validate(x) and self.validate(y):
+    def __init__(self, x: int = 0, y: int = 0, lock: int = 0):
+        self.__x = self.__y = self.lock = 0
+        if self.validate(x) and self.validate(y) and self.validate(lock):
             self.__x = x
-            self.y = y
+            self.__y = y
+            self.lock = lock
         else:
             raise ValueError(
                 'Значения атрибутов x и y не попадают в диапазон от 0 до 100, либо не являются числами')
@@ -42,21 +43,21 @@ class Point:
     def set_attr(self, x: int, y: int) -> None:
         if self.validate(x) and self.validate(y):
             self.__x = x
-            self.y = y
+            self.__y = y
         else:
             raise ValueError(
                 'Значения атрибутов x и y не попадают в диапазон от 0 до 100, либо не являются числами')
 
     def get_attr(self) -> None:
-        print(f'Атрибут Х={self.__x}, атрибут У={self.y}')
+        print(f'Атрибут Х={self.__x}, атрибут У={self.__y}')
 
-    # метод __getattribute__ вызывается при обращении к атрибуту экземпляра класса
+    # метод __getattribute__ вызывается при обращении к атрибуту
+    # экземпляра класса
     def __getattribute__(self, item):
-        if item == 'y':
-            print('К атрибуту "y" доступ запрещен!')
-            return object.__getattribute__(self, item)
+        if item == 'lock':
             # генерация исключения raise ValueError() запрещает доступ
             # к атрубуту "у" даже через метод, например: get_attr()
+            raise ValueError('Доступ к атрибуту "lock" запрещен')
         else:
             return object.__getattribute__(self, item)
 
@@ -73,13 +74,12 @@ class Point:
     # экземпляра класса
     def __getattr__(self, item):
         # может использоваться для замены вывода ошибки на что-то другое,
-#       # например, 'False'
+        # например, 'False'
         return False
 
+
 if __name__ == '__main__':
-    pt = Point(1, 12)
+    pt = Point(1, 12, 50)
     pt.set_attr(23, 45)
-    # pt.get_attr()
-    print(pt.aa)
-
-
+    pt.get_attr()
+    print(pt.__dict__)
