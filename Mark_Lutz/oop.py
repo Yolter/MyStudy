@@ -1,6 +1,6 @@
 from accessify import *
 
-
+# test 2
 class Point:
     color = 'red'
     circle = 2
