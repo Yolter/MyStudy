@@ -62,6 +62,7 @@ class Point:
             return object.__getattribute__(self, item)
 
     # метод __setattr__ вызывается при присвоении значения атрибуту
+    # экземпляра класса
     def __setattr__(self, key, value):
         # может использоваться, например, для запрещения создания атрибута с
         # определенным именем
@@ -77,9 +78,59 @@ class Point:
         # например, 'False'
         return False
 
+    # метод __delattr__ вызывается при удалении атрибута экземпляра класса
+    def __delattr__(self, item):
+        print('удален атрибут: ' + item)
+        object.__delattr__(self, item)
+
+
+# паттерн "моносостояние" позволят создавать новые экземпляры класса
+# с одинаковыми атрибутами
+class Mono:
+    __shared_data = {
+        'name': 'user',
+        'data': {},
+        'id': 1
+    }
+
+    def __init__(self):
+        self.__dict__ = self.__shared_data
+
+
+# свойства property позволяют обращаться к сеттерам и геттерам
+# через единый интерфейс экземпляра класса property
+
+class Person:
+    def __init__(self, name: str, old: int):
+        self.__name = name
+        self.__old = old
+
+    def get_old(self):
+        return self.__old
+
+    def set_old(self, old):
+        self.__old = old
+
+    old = property(get_old, set_old)
+
+
 
 if __name__ == '__main__':
-    pt = Point(1, 12, 50)
-    pt.set_attr(23, 45)
-    pt.get_attr()
-    print(pt.__dict__)
+    # pt = Point(1, 12, 50)
+    # pt.set_attr(23, 45)
+    # pt.get_attr()
+    # pt.b = 123
+    # print(pt.__dict__)
+    # del pt.b
+    # print(pt.__dict__)
+
+    # mn1 = Mono()
+    # mn1.__dict__['name'] = 'vlad'
+    # mn2 = Mono()
+    # print(mn1.__dict__)
+    # print(mn2.__dict__)
+
+    guy = Person('Nick', 31)
+    print(guy.old)
+    guy.old = 22
+    print(guy.__dict__)
