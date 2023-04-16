@@ -97,8 +97,7 @@ class Mono:
         self.__dict__ = self.__shared_data
 
 
-# свойства property позволяют обращаться к сеттерам и геттерам
-# через единый интерфейс экземпляра класса property
+
 
 class Person:
     def __init__(self, name: str, old: int):
@@ -111,8 +110,23 @@ class Person:
     def set_old(self, old):
         self.__old = old
 
+    # свойства property позволяют обращаться к сеттерам и геттерам
+    # через единый интерфейс экземпляра класса property
     old = property(get_old, set_old)
 
+    # однако, на практике используют декоратор @property, чтобы избежать
+    # функционального дублирования
+    @property
+    def name(self):
+        return self.__name
+
+    @name.setter
+    def name(self, name):
+        self.__name = name
+
+    @name.deleter
+    def name(self):
+        del self.__name
 
 
 if __name__ == '__main__':
@@ -131,6 +145,6 @@ if __name__ == '__main__':
     # print(mn2.__dict__)
 
     guy = Person('Nick', 31)
-    print(guy.old)
-    guy.old = 22
+    print(guy.name)
+    guy.name = 'Vlad'
     print(guy.__dict__)
