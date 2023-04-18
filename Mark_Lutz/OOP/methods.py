@@ -2,8 +2,7 @@ from accessify import *
 
 
 class Point:
-    color = 'red'
-    circle = 2
+
     MIN_COORD = 0
     MAX_COORD = 100
 
@@ -40,6 +39,8 @@ class Point:
     def __del__(self):
         print(f'Ой!, кажется удалили объект {str(self)}')
 
+    # сеттер позволяет изменять закрытые атрибуты, те работать с закрытми отрибутами
+    # только через разрешенные интерфейсы
     def set_attr(self, x: int, y: int) -> None:
         if self.validate(x) and self.validate(y):
             self.__x = x
@@ -48,6 +49,7 @@ class Point:
             raise ValueError(
                 'Значения атрибутов x и y не попадают в диапазон от 0 до 100, либо не являются числами')
 
+    # геттер позволяет получать закрытые атрибуты разрешенным образом
     def get_attr(self) -> None:
         print(f'Атрибут Х={self.__x}, атрибут У={self.__y}')
 
@@ -84,67 +86,11 @@ class Point:
         object.__delattr__(self, item)
 
 
-# паттерн "моносостояние" позволят создавать новые экземпляры класса
-# с одинаковыми атрибутами
-class Mono:
-    __shared_data = {
-        'name': 'user',
-        'data': {},
-        'id': 1
-    }
-
-    def __init__(self):
-        self.__dict__ = self.__shared_data
-
-
-
-
-class Person:
-    def __init__(self, name: str, old: int):
-        self.__name = name
-        self.__old = old
-
-    def get_old(self):
-        return self.__old
-
-    def set_old(self, old):
-        self.__old = old
-
-    # свойства property позволяют обращаться к сеттерам и геттерам
-    # через единый интерфейс экземпляра класса property
-    old = property(get_old, set_old)
-
-    # однако, на практике используют декоратор @property, чтобы избежать
-    # функционального дублирования
-    @property
-    def name(self):
-        return self.__name
-
-    @name.setter
-    def name(self, name):
-        self.__name = name
-
-    @name.deleter
-    def name(self):
-        del self.__name
-
-
 if __name__ == '__main__':
-    # pt = Point(1, 12, 50)
-    # pt.set_attr(23, 45)
-    # pt.get_attr()
-    # pt.b = 123
-    # print(pt.__dict__)
-    # del pt.b
-    # print(pt.__dict__)
-
-    # mn1 = Mono()
-    # mn1.__dict__['name'] = 'vlad'
-    # mn2 = Mono()
-    # print(mn1.__dict__)
-    # print(mn2.__dict__)
-
-    guy = Person('Nick', 31)
-    print(guy.name)
-    guy.name = 'Vlad'
-    print(guy.__dict__)
+    pt = Point(1, 12, 50)
+    pt.set_attr(23, 45)
+    pt.get_attr()
+    pt.b = 123
+    print(pt.__dict__)
+    del pt.b
+    print(pt.__dict__)
