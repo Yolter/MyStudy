@@ -1,0 +1,13 @@
+blinker==1.6.2
+click==8.1.3
+Flask==2.3.2
+itsdangerous==2.1.2
+Jinja2==3.1.2
+MarkupSafe==2.1.3
+mysql-connector-python==8.0.33
+protobuf==4.23.2
+psycopg==3.1.9
+psycopg-binary==3.1.9
+typing_extensions==4.6.3
+vsearch @ file:///home/yolter/Dev/mymodules/dist/vsearch-1.0.tar.gz#sha256=bc499d77e22e6027d722d21eb60e83bbea2723d2f4f110d693633fe07220136c
+Werkzeug==2.3.6

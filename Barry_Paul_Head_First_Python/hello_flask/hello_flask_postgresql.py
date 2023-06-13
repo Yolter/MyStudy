@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, escape  # redirect
 from vsearch import search4letters
-import psycopg2
+import psycopg
 from config_postgresql import config
 
 app = Flask(__name__)
